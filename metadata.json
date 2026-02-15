@@ -1,0 +1,7 @@
+{
+  "name": "J&S Wedding Reveal",
+  "description": "Pozivinica za Jelenino i Stefanovo vjenčanje",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
