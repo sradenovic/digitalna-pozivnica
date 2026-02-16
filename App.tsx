@@ -11,7 +11,7 @@ interface AppProps {
 const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3` }: AppProps) => {
     const vocoPodgorica = {
         name: "voco Podgorica by IHG",
-        address: "Bulevar Svetog Petra Cetinjskog 96, Podgorica 81000, Montenegro",
+        address: "Bulevar Svetog Petra Cetinjskog 96, Podgorica 81000, Crna Gora",
         phone: "+382 20 406 100",
         mapUri: "https://www.google.com/maps/search/?api=1&query=voco+Podgorica+by+IHG",
         photoUrl: "https://www.instagram.com/p/DJrq77FoT2g/"
@@ -90,15 +90,18 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
                     console.error('Autoplay failed:', err);
                 });
             }
+            document.removeEventListener('scrollend', handleFirstInteraction);
             document.removeEventListener('click', handleFirstInteraction);
             document.removeEventListener('touchstart', handleFirstInteraction);
         };
 
         if (isLoaded && !error) {
+            document.removeEventListener('scrollend', handleFirstInteraction);
             document.addEventListener('click', handleFirstInteraction, { once: true });
             document.addEventListener('touchstart', handleFirstInteraction, { once: true });
 
             return () => {
+                document.removeEventListener('scrollend', handleFirstInteraction);
                 document.removeEventListener('click', handleFirstInteraction);
                 document.removeEventListener('touchstart', handleFirstInteraction);
             };
@@ -151,7 +154,7 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           <img 
             src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
             alt="Wedding Background" 
-            className="w-full h-full object-cover opacity-50"
+            className="w-full h-full object-cover opacity-65"
           />
           <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
         </div>
@@ -194,9 +197,9 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
 
           {scratched && (
             <div className="mt-8 animate-fade-in">
-              <p className="text-[#d4af37] font-serif text-xl italic">Molimo Vas da potvrdite dolazak do 01.05.2026.</p>
-                <p><a href="viber://chat?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a></p>
-                <p><a href="viber://chat?number=%2B67019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a></p>
+              <p className="text-[#d4af37] font-serif text-xl italic uppercase">Molimo Vas da potvrdite dolazak do 01.05.2026.</p>
+                <p><a href="viber://add?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a></p>
+                <p><a href="viber://add?number=%2B38267019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a></p>
               <button className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
                   <a href={`${import.meta.env.BASE_URL}event.ics`}>Dodaj u kalendar</a>
               </button>

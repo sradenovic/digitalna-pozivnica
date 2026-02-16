@@ -19,7 +19,7 @@ const VenueExplorer: React.FC<VenueExplorerProps> = ({ venue, mapEmbedUrl }) => 
             <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
                     <h2 className="text-3xl font-serif text-[#4a4a4a] mb-4">
-                        Sala za proslavu
+                        Svečana sala
                     </h2>
 
                     <p className="font-semibold text-[#d4af37] text-xl mb-2">

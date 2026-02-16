@@ -14,7 +14,7 @@ const agendaItems: AgendaItem[] = [
     description: "manastir Dajbabe"
   },
   {
-    time: "15:00h",
+    time: "od 15:00h",
     title: "Vrijeme dolaska",
     description: "restoran voco Podgorica by IHG"
   },
@@ -45,7 +45,7 @@ const Agenda: React.FC = () => {
               <div className="w-full md:w-1/2 px-4 md:px-12 text-center md:text-left">
                 <div className={`p-6 rounded-lg bg-white shadow-sm border border-gray-50 hover:shadow-md transition-shadow duration-300 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                   <span className="text-[#d4af37] font-semibold tracking-tighter text-lg">{item.time}</span>
-                  <h3 className="text-xl font-serif text-[#4a4a4a] mt-1 mb-2">{item.title}</h3>
+                  <h3 className="text-xl font-serif text-[#4a4a4a] mt-1 mb-2 uppercase">{item.title}</h3>
                   <p className="text-sm text-[#7a7a7a] leading-relaxed">{item.description}</p>
                 </div>
               </div>
