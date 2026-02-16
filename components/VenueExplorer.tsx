@@ -3,7 +3,6 @@ import React from 'react';
 export interface VenueInfo {
     name: string;
     address: string;
-    description: string;
     mapUri?: string;
     phone?: string;
     photoUrl?: string;
@@ -30,10 +29,6 @@ const VenueExplorer: React.FC<VenueExplorerProps> = ({ venue, mapEmbedUrl }) => 
                     <p className="text-[#7a7a7a] text-sm mb-6 leading-relaxed italic">
                         {venue.address}
                     </p>
-
-                    <div className="prose prose-sm text-[#666] mb-8 leading-relaxed">
-                        {venue.description}
-                    </div>
 
                     <div className="flex flex-wrap gap-3">
                         {venue.mapUri && (

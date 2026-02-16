@@ -60,7 +60,12 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
         canvas.height = containerRef.current.clientHeight;
         
         // Redraw overlay
-        ctx.fillStyle = '#FFD700'; // Gold color
+        // ctx.fillStyle = '#FFD700'; // Gold color
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop(0.1, '#E0AA3E');
+        gradient.addColorStop(0.75, '#FEFE68');
+        gradient.addColorStop(1, '#F3A80A');
+        ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Add some noise/texture
@@ -129,7 +134,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
     }
 
     const percentage = (transparentPixels / (pixels.length / 4)) * 100;
-    if (percentage > 50 && !isDone) {
+    if (percentage > 60 && !isDone) {
       setIsDone(true);
       if (onScratched) onScratched();
     }

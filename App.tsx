@@ -12,7 +12,6 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
     const vocoPodgorica = {
         name: "voco Podgorica by IHG",
         address: "Bulevar Svetog Petra Cetinjskog 96, Podgorica 81000, Montenegro",
-        description: "Smješten u srcu glavnog grada Crne Gore, voco Podgorica spaja moderni luksuz s toplim balkanskim gostoprimstvom. Ovaj elegantni hotel nudi savremene sobe, bogatu gastronomiju i najsavremenije prostore za razne događaje.",
         phone: "+382 20 406 100",
         mapUri: "https://www.google.com/maps/search/?api=1&query=voco+Podgorica+by+IHG",
         photoUrl: "https://www.instagram.com/p/DJrq77FoT2g/"
@@ -34,91 +33,141 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
         audio.loop = true; // Loop the music continuously
         audio.volume = 0.25; // Set to 30% volume for subtle background music
 
-        audio.addEventListener('canplaythrough', () => {
+        const handleCanPlay = () => {
             setIsLoaded(true);
             setError(false);
-        });
+        };
 
-        audio.addEventListener('error', () => {
+        const handleError = () => {
             setError(true);
             console.error('Failed to load audio file');
-        });
+        };
+
+        const handlePlay = () => {
+            setIsPlaying(true);
+        };
+
+        const handlePause = () => {
+            setIsPlaying(false);
+        };
+
+        audio.addEventListener('canplaythrough', handleCanPlay);
+        audio.addEventListener('error', handleError);
+        audio.addEventListener('play', handlePlay);
+        audio.addEventListener('pause', handlePause);
 
         audioRef.current = audio;
 
         return () => {
+            audio.removeEventListener('canplaythrough', handleCanPlay);
+            audio.removeEventListener('error', handleError);
+            audio.removeEventListener('play', handlePlay);
+            audio.removeEventListener('pause', handlePause);
             audio.pause();
             audio.src = '';
         };
     }, [audioUrl]);
 
-    // Handle play/pause
-    useEffect(() => {
-        if (!audioRef.current || !isLoaded) return;
+    const toggleMusic = () => {
+        const audio = audioRef.current;
+        if (!audio || !isLoaded || error) return;
 
-        if (isPlaying) {
-            audioRef.current.play().catch(err => {
+        if (audio.paused) {
+            audio.play().catch(err => {
                 console.error('Failed to play audio:', err);
-                setIsPlaying(false);
             });
         } else {
-            audioRef.current.pause();
-        }
-    }, [isPlaying, isLoaded]);
-
-    const toggleMusic = () => {
-        if (isLoaded && !error) {
-            setIsPlaying(!isPlaying);
+            audio.pause();
         }
     };
 
-    // Auto-play on first user interaction
+    // Autoplay on first user interaction
     useEffect(() => {
         const handleFirstInteraction = () => {
-            if (isLoaded && !error && !isPlaying) {
-                setIsPlaying(true);
+            const audio = audioRef.current;
+            if (audio && isLoaded && !error && audio.paused) {
+                audio.play().catch(err => {
+                    console.error('Autoplay failed:', err);
+                });
             }
-            document.removeEventListener('scroll', handleFirstInteraction);
             document.removeEventListener('click', handleFirstInteraction);
             document.removeEventListener('touchstart', handleFirstInteraction);
         };
 
         if (isLoaded && !error) {
-            document.removeEventListener('scroll', handleFirstInteraction);
-            document.addEventListener('click', handleFirstInteraction);
-            document.addEventListener('touchstart', handleFirstInteraction);
+            document.addEventListener('click', handleFirstInteraction, { once: true });
+            document.addEventListener('touchstart', handleFirstInteraction, { once: true });
 
             return () => {
-                document.removeEventListener('scroll', handleFirstInteraction);
                 document.removeEventListener('click', handleFirstInteraction);
                 document.removeEventListener('touchstart', handleFirstInteraction);
             };
         }
-    }, [isLoaded, error, isPlaying]);
+    }, [isLoaded, error]);
 
   return (
     <div className="min-h-screen flex flex-col pb-20">
+        {/* Music Control Button */}
+        {!error && (
+            <button
+                onClick={toggleMusic}
+                disabled={!isLoaded}
+                className={`fixed top-4 right-4 z-50 p-2.5 bg-white/90 backdrop-blur rounded-full shadow-md hover:shadow-lg transition-all duration-300 border border-[#d4af37]/20 ${
+                    isLoaded ? 'hover:scale-105 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                }`}
+                aria-label={isPlaying ? "Pause music" : "Play music"}
+            >
+                {!isLoaded ? (
+                    <svg className="w-4 h-4 text-[#d4af37] animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                ) : isPlaying ? (
+                    <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                    </svg>
+                ) : (
+                    <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                )}
+            </button>
+        )}
+
+        {/* Music indicator */}
+        {isPlaying && (
+            <div className="fixed top-4 right-16 z-50 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur rounded-full shadow-md border border-[#d4af37]/20 animate-fade-in">
+                <div className="flex gap-0.5">
+                    <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                </div>
+                <span className="text-xs text-gray-600">♫</span>
+            </div>
+        )}
       {/* Header / Hero Section */}
       <header className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
             alt="Wedding Background" 
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
           <span className="text-sm tracking-[0.4em] text-[#d4af37] uppercase mb-6 block font-light animate-fade-in">
-            Svečano Vas pozivamo na vjenčanje
+            Pozivamo vas da svojim prisustvom uljepšate naš dan
           </span>
-          <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 animate-slide-up">
-            Jelene & Stefana
-          </h1>
+            <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 animate-slide-up flex flex-col md:flex-row md:gap-2 items-center justify-center">
+                <span>Jelena</span>
+                <span>&</span>
+                <span>Stefan</span>
+            </h1>
           <div className="w-16 h-0.5 bg-[#d4af37] mx-auto mb-8"></div>
           <p className="text-lg md:text-xl text-[#7a7a7a] leading-relaxed font-light font-serif italic">
-            "Radio bih dijelio jedan život s tobom, nego suočiti sa svim razdobljima ovoga svijeta sam."
+            "Ljubav jača od vina, prati nas kao sudbina, kao najljepša čarolija"
           </p>
         </div>
         
@@ -132,13 +181,13 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
       {/* Scratcher Section */}
       <section className="px-6 py-24 bg-white border-b border-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-serif text-[#4a4a4a] mb-2">Rezervišite datum!</h2>
-          <p className="text-sm text-[#7a7a7a] mb-12 tracking-widest uppercase font-light">Ogrebi ispod za datum vjenčanja</p>
+          {/*<h2 className="text-2xl font-serif text-[#4a4a4a] mb-2">Rezervišite datum!</h2>*/}
+          <p className="text-sm text-[#7a7a7a] mb-12 tracking-widest uppercase font-light">OGREBITE ZLATNO POLJE DA OTKRIJETE DATUM VJENČANJA</p>
           
           <div className="max-w-md mx-auto">
             <ScratchCard 
               revealText="16. maj 2026."
-              subText="Dolazak gostiju u restoran od 15h"
+              subText="Dolazak u restoran od 15h"
               onScratched={() => setScratched(true)}
             />
           </div>
@@ -146,8 +195,8 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           {scratched && (
             <div className="mt-8 animate-fade-in">
               <p className="text-[#d4af37] font-serif text-xl italic">Molimo Vas da potvrdite dolazak do 01.05.2026.</p>
-                <p><a href="viber://chat?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: +38269010567</a></p>
-                <p><a href="viber://chat?number=%2B67019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: +38267019007</a></p>
+                <p><a href="viber://chat?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a></p>
+                <p><a href="viber://chat?number=%2B67019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a></p>
               <button className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
                   <a href={`${import.meta.env.BASE_URL}event.ics`}>Dodaj u kalendar</a>
               </button>
@@ -171,6 +220,7 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
 
       {/* Footer */}
       <footer className="mt-auto py-12 text-center bg-white border-t border-gray-100">
+          <p className="text-xs tracking-[0.2em] text-[#999] uppercase mb-4">RADUJEMO SE VAŠEM DOLASKU!</p>
         <p className="text-xs tracking-[0.2em] text-[#999] uppercase mb-4">Jelena & Stefan • 2026</p>
         <div className="flex justify-center space-x-6">
           <button className="text-[#7a7a7a] hover:text-[#d4af37] transition-colors">
