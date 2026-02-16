@@ -8,7 +8,7 @@ interface AppProps {
     audioUrl?: string; // URL to your mp3 or wav file
 }
 
-const App: React.FC = ({ audioUrl = '/wedding-music.mp3' }: AppProps) => {
+const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3` }: AppProps) => {
     const vocoPodgorica = {
         name: "voco Podgorica by IHG",
         address: "Bulevar Svetog Petra Cetinjskog 96, Podgorica 81000, Montenegro",
@@ -149,7 +149,7 @@ const App: React.FC = ({ audioUrl = '/wedding-music.mp3' }: AppProps) => {
                 <p><a href="viber://chat?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: +38269010567</a></p>
                 <p><a href="viber://chat?number=%2B67019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: +38267019007</a></p>
               <button className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
-                  <a href="/event.ics">Dodaj u kalendar</a>
+                  <a href={`${import.meta.env.BASE_URL}event.ics`}>Dodaj u kalendar</a>
               </button>
             </div>
           )}
