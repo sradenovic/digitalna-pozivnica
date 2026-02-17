@@ -27,11 +27,16 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
+    const [showPlayPrompt, setShowPlayPrompt] = useState(false);
 
     useEffect(() => {
         const audio = new Audio(audioUrl);
         audio.loop = true; // Loop the music continuously
         audio.volume = 0.25; // Set to 30% volume for subtle background music
+
+        // Important for mobile: Set playsinline attribute
+        audio.setAttribute('playsinline', 'true');
+        audio.setAttribute('webkit-playsinline', 'true');
 
         const handleCanPlay = () => {
             setIsLoaded(true);
@@ -68,42 +73,62 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
         };
     }, [audioUrl]);
 
-    const toggleMusic = () => {
+    const toggleMusic = async () => {
         const audio = audioRef.current;
         if (!audio || !isLoaded || error) return;
 
-        if (audio.paused) {
-            audio.play().catch(err => {
-                console.error('Failed to play audio:', err);
-            });
-        } else {
-            audio.pause();
+        try {
+            if (audio.paused) {
+                // For mobile: ensure we have user gesture context
+                await audio.play();
+                setShowPlayPrompt(false); // Hide prompt once music starts
+            } else {
+                audio.pause();
+            }
+        } catch (err) {
+            console.error('Failed to toggle audio:', err);
+            // If autoplay is blocked, show the button so user can manually start
+            setIsPlaying(false);
+            setShowPlayPrompt(true);
         }
     };
 
     // Autoplay on first user interaction
     useEffect(() => {
-        const handleFirstInteraction = () => {
+        let attempted = false;
+
+        const handleFirstInteraction = (e: Event) => {
+            if (attempted) return;
+            attempted = true;
+
             const audio = audioRef.current;
             if (audio && isLoaded && !error && audio.paused) {
-                audio.play().catch(err => {
-                    console.error('Autoplay failed:', err);
-                });
+                // Force audio context resume for mobile browsers
+                audio.play()
+                    .then(() => {
+                        setShowPlayPrompt(false);
+                    })
+                    .catch(err => {
+                        console.error('Autoplay failed:', err);
+                        // Show prompt for user to manually start music
+                        setShowPlayPrompt(true);
+                        attempted = false;
+                    });
             }
-            document.removeEventListener('scrollend', handleFirstInteraction);
-            document.removeEventListener('click', handleFirstInteraction);
-            document.removeEventListener('touchstart', handleFirstInteraction);
         };
 
         if (isLoaded && !error) {
-            document.removeEventListener('scrollend', handleFirstInteraction);
-            document.addEventListener('click', handleFirstInteraction, { once: true });
-            document.addEventListener('touchstart', handleFirstInteraction, { once: true });
+            // Listen to multiple event types for better mobile support
+            const events = ['click', 'touchend', 'touchstart'];
+
+            events.forEach(event => {
+                document.addEventListener(event, handleFirstInteraction, { once: true, passive: true });
+            });
 
             return () => {
-                document.removeEventListener('scrollend', handleFirstInteraction);
-                document.removeEventListener('click', handleFirstInteraction);
-                document.removeEventListener('touchstart', handleFirstInteraction);
+                events.forEach(event => {
+                    document.removeEventListener(event, handleFirstInteraction);
+                });
             };
         }
     }, [isLoaded, error]);
@@ -154,13 +179,13 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           <img 
             src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
             alt="Wedding Background" 
-            className="w-full h-full object-cover opacity-65"
+            className="w-full h-full object-cover opacity-70"
           />
           <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
-          <span className="text-sm tracking-[0.4em] text-[#d4af37] uppercase mb-6 block font-light animate-fade-in">
+          <span className="text-sm tracking-[0.4em] text-[#d4af37] uppercase mb-6 block font-bold animate-fade-in">
             Pozivamo vas da svojim prisustvom uljepšate naš dan
           </span>
             <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 animate-slide-up flex flex-col md:flex-row md:gap-2 items-center justify-center">
