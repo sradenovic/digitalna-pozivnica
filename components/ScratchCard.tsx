@@ -77,7 +77,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
         ctx.font = '20px Montserrat';
         ctx.fillStyle = '#333333';
         ctx.textAlign = 'center';
-        // ctx.fillText('OGREBI ZA DATUM', canvas.width / 2, canvas.height / 2 + 7);
+        ctx.fillText('OGREBI ZA DATUM', canvas.width / 2, canvas.height / 2 + 7);
       }
     };
 

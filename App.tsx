@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import ScratchCard from './components/ScratchCard';
 import VenueExplorer from './components/VenueExplorer';
 import Agenda from './components/Agenda';
+import PhotoSlider from "@/components/Photoslider.tsx";
 
 interface AppProps {
     audioUrl?: string; // URL to your mp3 or wav file
@@ -11,8 +12,9 @@ interface AppProps {
 const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3` }: AppProps) => {
     const vocoPodgorica = {
         name: "voco Podgorica by IHG",
-        address: "Bulevar Svetog Petra Cetinjskog 96, Podgorica 81000, Crna Gora",
-        phone: "+382 20 406 100",
+        address: "Oktoih 2, Donja Gorica, Podgorica 81000, Crna Gora",
+        email: "info@vcpodgorica.com",
+        desc: "*Besplatan parking za goste",
         mapUri: "https://www.google.com/maps/search/?api=1&query=voco+Podgorica+by+IHG",
         photoUrl: "https://www.instagram.com/p/DJrq77FoT2g/"
     };
@@ -103,14 +105,12 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
 
             const audio = audioRef.current;
             if (audio && isLoaded && !error && audio.paused) {
-                // Force audio context resume for mobile browsers
                 audio.play()
                     .then(() => {
                         setShowPlayPrompt(false);
                     })
                     .catch(err => {
                         console.error('Autoplay failed:', err);
-                        // Show prompt for user to manually start music
                         setShowPlayPrompt(true);
                         attempted = false;
                     });
@@ -118,16 +118,19 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
         };
 
         if (isLoaded && !error) {
-            // Listen to multiple event types for better mobile support
-            const events = ['click', 'touchend', 'touchstart'];
+            // Only trusted gesture events — scroll/touchmove are NOT trusted on mobile
+            const events = ['touchend', 'mousedown', 'click', 'keydown', 'scroll'];
 
             events.forEach(event => {
-                document.addEventListener(event, handleFirstInteraction, { once: true, passive: true });
+                document.addEventListener(event, handleFirstInteraction, { once: true, passive: true, capture: true });
             });
+
+            // Show the prompt immediately so user knows to tap
+            setShowPlayPrompt(true);
 
             return () => {
                 events.forEach(event => {
-                    document.removeEventListener(event, handleFirstInteraction);
+                    document.removeEventListener(event, handleFirstInteraction, { capture: true });
                 });
             };
         }
@@ -136,6 +139,17 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
   return (
     <div className="min-h-screen flex flex-col pb-20">
         {/* Music Control Button */}
+        {showPlayPrompt && isLoaded && (
+            <div
+                onClick={toggleMusic}
+                className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 bg-white/95 backdrop-blur rounded-full shadow-lg border border-[#d4af37]/40 cursor-pointer animate-fade-in"
+            >
+                <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+                <span className="text-xs text-[#7a7a7a] tracking-widest uppercase">Tap for music</span>
+            </div>
+        )}
         {!error && (
             <button
                 onClick={toggleMusic}
@@ -179,7 +193,7 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           <img 
             src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
             alt="Wedding Background" 
-            className="w-full h-full object-cover opacity-70"
+            className="w-full h-full object-cover opacity-90"
           />
           <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
         </div>
@@ -188,13 +202,15 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           <span className="text-sm tracking-[0.4em] text-[#d4af37] uppercase mb-6 block font-bold animate-fade-in">
             Pozivamo vas da svojim prisustvom uljepšate naš dan
           </span>
-            <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 animate-slide-up flex flex-col md:flex-row md:gap-2 items-center justify-center">
-                <span>Jelena</span>
-                <span>&</span>
-                <span>Stefan</span>
+            <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 flex flex-col md:flex-row md:gap-2 items-center justify-center">
+                <span className="animate-slide-right" style={{ animationDelay: '0ms' }}>Jelena</span>
+                <span className="animate-slide-right" style={{ animationDelay: '200ms', opacity: 0 }}>
+        <span className="font-jelena">&</span>
+    </span>
+                <span className="animate-slide-right" style={{ animationDelay: '400ms', opacity: 0 }}>Stefan</span>
             </h1>
           <div className="w-16 h-0.5 bg-[#d4af37] mx-auto mb-8"></div>
-          <p className="text-lg md:text-xl text-[#7a7a7a] leading-relaxed font-light font-serif italic">
+          <p className="text-lg md:text-xl text-[#7a7a7a] leading-relaxed font-light font-serif italic animate-slide-left" style={{ animationDelay: '600ms', opacity: 0 }}>
             "Ljubav jača od vina, prati nas kao sudbina, kao najljepša čarolija"
           </p>
         </div>
@@ -245,6 +261,11 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
             mapEmbedUrl={mapEmbedUrl}
         />
       </section>
+      {/*Slider Section*/}
+        <section id="slider" className="px-6 py-20 bg-[#faf9f6]">
+            <PhotoSlider
+            />
+        </section>
 
       {/* Footer */}
       <footer className="mt-auto py-12 text-center bg-white border-t border-gray-100">

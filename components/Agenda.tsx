@@ -15,7 +15,7 @@ const agendaItems: AgendaItem[] = [
   },
   {
     time: "od 15:00h",
-    title: "Vrijeme dolaska",
+    title: "Dolazak u restoran",
     description: "restoran voco Podgorica by IHG"
   },
   {

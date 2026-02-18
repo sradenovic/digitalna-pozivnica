@@ -4,7 +4,8 @@ export interface VenueInfo {
     name: string;
     address: string;
     mapUri?: string;
-    phone?: string;
+    desc?: string;
+    email?: string;
     photoUrl?: string;
 }
 
@@ -17,7 +18,7 @@ const VenueExplorer: React.FC<VenueExplorerProps> = ({ venue, mapEmbedUrl }) => 
     return (
         <div className="mt-12 p-6 md:p-10 bg-white shadow-xl rounded-2xl border border-[#d4af37]/20 max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div>
+                <div className="flex flex-col h-full">
                     <h2 className="text-3xl font-serif text-[#4a4a4a] mb-4">
                         Svečana sala
                     </h2>
@@ -38,7 +39,7 @@ const VenueExplorer: React.FC<VenueExplorerProps> = ({ venue, mapEmbedUrl }) => 
                                 rel="noopener noreferrer"
                                 className="inline-block px-8 py-3 bg-[#d4af37] text-white rounded-full text-sm tracking-widest hover:bg-[#b8962d] transition-all duration-300 shadow-lg shadow-[#d4af37]/20 hover:shadow-xl hover:shadow-[#d4af37]/30 hover:-translate-y-0.5"
                             >
-                                📍 OTVORI PREKO GOOGLE MAPS
+                                📍 GOOGLE MAPS
                             </a>
                         )}
                     </div>
@@ -83,6 +84,9 @@ const VenueExplorer: React.FC<VenueExplorerProps> = ({ venue, mapEmbedUrl }) => 
                         </>
                     )}
                 </div>
+                <p className="mt-auto text-sm font-semibold text-[#4a4a4a]">
+                    {venue.desc}
+                </p>
             </div>
         </div>
     );
