@@ -8,19 +8,19 @@ interface Slide {
 const slides: Slide[] = [
     {
         url: 'https://images.unsplash.com/photo-1529636798458-92182e662485?w=1200&q=80',
-        caption: 'Zajedno zauvijek',
+        caption: 'srećan početak',
     },
     {
         url: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&q=80',
-        caption: 'Ljubav koja traje',
+        caption: 'ljubav koja traje',
     },
     {
-        url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=80',
-        caption: 'Naš poseban dan',
+        url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80',
+        caption: 'zauvijek zajedno',
     },
     {
         url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&q=80',
-        caption: 'Sretan početak',
+        caption: 'naš poseban dan',
     },
 ];
 
@@ -53,7 +53,7 @@ const PhotoSlider: React.FC = () => {
 
     // Auto-advance
     useEffect(() => {
-        timerRef.current = setTimeout(() => next(), 4500);
+        timerRef.current = setTimeout(() => next(), 3000);
         return () => { if (timerRef.current) clearTimeout(timerRef.current); };
     }, [current]);
 

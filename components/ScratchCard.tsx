@@ -16,37 +16,6 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
   const lastCheckRef = useRef<number>(0);
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  // Initialize audio context
-  useEffect(() => {
-    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-    };
-  }, []);
-
-  // Play scratch sound
-  // const playScratchSound = () => {
-  //   if (!audioContextRef.current) return;
-  //
-  //   const ctx = audioContextRef.current;
-  //   const oscillator = ctx.createOscillator();
-  //   const gainNode = ctx.createGain();
-  //
-  //   oscillator.connect(gainNode);
-  //   gainNode.connect(ctx.destination);
-  //
-  //   oscillator.type = 'triangle';
-  //   oscillator.frequency.setValueAtTime(100 + Math.random() * 50, ctx.currentTime);
-  //
-  //   gainNode.gain.setValueAtTime(0.02, ctx.currentTime);
-  //   gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-  //
-  //   oscillator.start(ctx.currentTime);
-  //   oscillator.stop(ctx.currentTime + 0.05);
-  // };
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -58,7 +27,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
       if (containerRef.current) {
         canvas.width = containerRef.current.clientWidth;
         canvas.height = containerRef.current.clientHeight;
-        
+
         // Redraw overlay
         // ctx.fillStyle = '#FFD700'; // Gold color
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
@@ -67,7 +36,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
         gradient.addColorStop(1, '#F3A80A');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         // Add some noise/texture
         for (let i = 0; i < 500; i++) {
           ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.1})`;
@@ -103,9 +72,6 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ revealText, subText, onScratc
       x = (e as React.MouseEvent).clientX - rect.left;
       y = (e as React.MouseEvent).clientY - rect.top;
     }
-
-    // Play scratch sound
-    // playScratchSound();
 
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();

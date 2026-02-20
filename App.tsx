@@ -95,6 +95,17 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
         }
     };
 
+    const handlePromptClick = async () => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        try {
+            await audio.play();
+            setShowPlayPrompt(false);
+        } catch (err) {
+            console.error('Failed to play audio:', err);
+        }
+    };
+
     // Autoplay on first user interaction
     useEffect(() => {
         let attempted = false;
@@ -139,10 +150,11 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
   return (
     <div className="min-h-screen flex flex-col pb-20">
         {/* Music Control Button */}
-        {showPlayPrompt && isLoaded && (
+        {!error && showPlayPrompt && isLoaded && (
             <div
-                onClick={toggleMusic}
-                className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 bg-white/95 backdrop-blur rounded-full shadow-lg border border-[#d4af37]/40 cursor-pointer animate-fade-in"
+                onClick={handlePromptClick}
+                disabled={!isLoaded}
+                className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 bg-white/95 backdrop-blur rounded-full shadow-lg border border-[#d4af37]/40 cursor-pointer animate-fade-in"
             >
                 <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
@@ -188,15 +200,23 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
             </div>
         )}
       {/* Header / Hero Section */}
-      <header className="relative h-[80vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
+      <header className="relative h-[80vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 md:hidden">
           <img 
-            src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+            src={`${import.meta.env.BASE_URL}/images/bg_first.jpg`}
             alt="Wedding Background" 
-            className="w-full h-full object-cover opacity-90"
+            className="w-full h-full object-cover object-top opacity-80"
+          />
+          <div className="absolute inset-0 bg-[#faf9f6]/50"></div>
+        </div>
+        <div className="absolute inset-0 hidden md:block">
+          <img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80"
+              alt="Wedding Background"
+              className="w-full h-full object-cover object-center opacity-80"
           />
           <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
-        </div>
+         </div>
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
           <span className="text-sm tracking-[0.4em] text-[#d4af37] uppercase mb-6 block font-bold animate-fade-in">
@@ -215,16 +235,36 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           </p>
         </div>
         
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
+        {/*<div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">*/}
+        {/*  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">*/}
+        {/*    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />*/}
+        {/*  </svg>*/}
+        {/*</div>*/}
       </header>
 
       {/* Scratcher Section */}
-      <section className="px-6 py-24 bg-white border-b border-gray-50">
-        <div className="max-w-4xl mx-auto text-center">
+        <section
+            className="px-6 py-24 relative">
+            {/* Mobile: image background */}
+            <div
+                className="absolute inset-0 block md:hidden"
+                style={{
+                    backgroundImage: `url(${import.meta.env.BASE_URL}/images/bg_screc.jpg)`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'top',
+                }}
+            />
+            {/* Desktop: dot pattern background */}
+            <div
+                className="absolute inset-0 hidden md:block"
+                style={{
+                    backgroundColor: '#faf9f6',
+                    backgroundImage: `radial-gradient(circle, #d4af3722 2px, transparent 1px)`,
+                    backgroundSize: '24px 24px',
+                }}
+            />
+            <div className="absolute inset-0 bg-white/70"></div>
+            <div className="relative z-10 max-w-4xl mx-auto text-center">
           {/*<h2 className="text-2xl font-serif text-[#4a4a4a] mb-2">Rezervišite datum!</h2>*/}
           <p className="text-sm text-[#7a7a7a] mb-12 tracking-widest uppercase font-light">OGREBITE ZLATNO POLJE DA OTKRIJETE DATUM VJENČANJA</p>
           
@@ -241,7 +281,7 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
               <p className="text-[#d4af37] font-serif text-xl italic uppercase">Molimo Vas da potvrdite dolazak do 01.05.2026.</p>
                 <p><a href="viber://add?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a></p>
                 <p><a href="viber://add?number=%2B38267019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a></p>
-              <button className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
+              <button className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] bg-white hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
                   <a href={`${import.meta.env.BASE_URL}event.ics`}>Dodaj u kalendar</a>
               </button>
             </div>
@@ -250,19 +290,19 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
       </section>
 
       {/* Agenda Section */}
-      <section id="agenda" className="px-6 py-20 bg-[#faf9f6]">
+      <section id="agenda" className="px-6 py-20 bg-[#f4f3f0]">
         <Agenda />
       </section>
 
       {/* Venue Section */}
-      <section id="venue" className="px-6 py-20 bg-[#f4f3f0]">
+      <section id="venue" className="px-6 py-20 bg-[#faf9f6]">
         <VenueExplorer
             venue={vocoPodgorica}
             mapEmbedUrl={mapEmbedUrl}
         />
       </section>
       {/*Slider Section*/}
-        <section id="slider" className="px-6 py-20 bg-[#faf9f6]">
+        <section id="slider" className="px-6 py-20 bg-[#f4f3f0]">
             <PhotoSlider
             />
         </section>
