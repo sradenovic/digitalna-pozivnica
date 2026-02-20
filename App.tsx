@@ -1,4 +1,3 @@
-
 import React, {useEffect, useRef, useState} from 'react';
 import ScratchCard from './components/ScratchCard';
 import VenueExplorer from './components/VenueExplorer';
@@ -9,7 +8,7 @@ interface AppProps {
     audioUrl?: string; // URL to your mp3 or wav file
 }
 
-const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3` }: AppProps) => {
+const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3`}: AppProps) => {
     const vocoPodgorica = {
         name: "voco Podgorica by IHG",
         address: "Oktoih 2, Donja Gorica, Podgorica 81000, Crna Gora",
@@ -133,7 +132,7 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
             const events = ['touchend', 'mousedown', 'click', 'keydown', 'scroll'];
 
             events.forEach(event => {
-                document.addEventListener(event, handleFirstInteraction, { once: true, passive: true, capture: true });
+                document.addEventListener(event, handleFirstInteraction, {once: true, passive: true, capture: true});
             });
 
             // Show the prompt immediately so user knows to tap
@@ -141,186 +140,205 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
 
             return () => {
                 events.forEach(event => {
-                    document.removeEventListener(event, handleFirstInteraction, { capture: true });
+                    document.removeEventListener(event, handleFirstInteraction, {capture: true});
                 });
             };
         }
     }, [isLoaded, error]);
 
-  return (
-    <div className="min-h-screen flex flex-col pb-20">
-        {/* Music Control Button */}
-        {!error && showPlayPrompt && isLoaded && (
-            <div
-                onClick={handlePromptClick}
-                disabled={!isLoaded}
-                className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 bg-white/95 backdrop-blur rounded-full shadow-lg border border-[#d4af37]/40 cursor-pointer animate-fade-in"
-            >
-                <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                </svg>
-                <span className="text-xs text-[#7a7a7a] tracking-widest uppercase">Tap for music</span>
-            </div>
-        )}
-        {!error && (
-            <button
-                onClick={toggleMusic}
-                disabled={!isLoaded}
-                className={`fixed top-4 right-4 z-50 p-2.5 bg-white/90 backdrop-blur rounded-full shadow-md hover:shadow-lg transition-all duration-300 border border-[#d4af37]/20 ${
-                    isLoaded ? 'hover:scale-105 cursor-pointer' : 'opacity-50 cursor-not-allowed'
-                }`}
-                aria-label={isPlaying ? "Pause music" : "Play music"}
-            >
-                {!isLoaded ? (
-                    <svg className="w-4 h-4 text-[#d4af37] animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                ) : isPlaying ? (
+    return (
+        <div className="min-h-screen flex flex-col pb-20">
+            {/* Music Control Button */}
+            {!error && showPlayPrompt && isLoaded && (
+                <div
+                    onClick={handlePromptClick}
+                    disabled={!isLoaded}
+                    className="fixed top-4 left-4 z-50 flex items-center gap-2 px-5 py-3 bg-white/95 backdrop-blur rounded-full shadow-lg border border-[#d4af37]/40 cursor-pointer animate-pulse"
+                >
                     <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                        <path d="M8 5v14l11-7z"/>
                     </svg>
-                ) : (
-                    <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
-                )}
-            </button>
-        )}
-
-        {/* Music indicator */}
-        {isPlaying && (
-            <div className="fixed top-4 right-16 z-50 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur rounded-full shadow-md border border-[#d4af37]/20 animate-fade-in">
-                <div className="flex gap-0.5">
-                    <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                    <span className="text-xs text-[#7a7a7a] tracking-widest uppercase">muzika</span>
                 </div>
-                <span className="text-xs text-gray-600">♫</span>
-            </div>
-        )}
-      {/* Header / Hero Section */}
-      <header className="relative h-[80vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 md:hidden">
-          <img 
-            src={`${import.meta.env.BASE_URL}/images/bg_first.jpg`}
-            alt="Wedding Background" 
-            className="w-full h-full object-cover object-top opacity-80"
-          />
-          <div className="absolute inset-0 bg-[#faf9f6]/50"></div>
-        </div>
-        <div className="absolute inset-0 hidden md:block">
-          <img
-              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80"
-              alt="Wedding Background"
-              className="w-full h-full object-cover object-center opacity-80"
-          />
-          <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
-         </div>
+            )}
+            {!error && !showPlayPrompt && (
+                <button
+                    onClick={toggleMusic}
+                    disabled={!isLoaded}
+                    className={`fixed top-4 left-4 z-50 p-2.5 bg-white/90 backdrop-blur rounded-full shadow-md hover:shadow-lg transition-all duration-300 border border-[#d4af37]/20 ${
+                        isLoaded ? 'hover:scale-105 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                    }`}
+                    aria-label={isPlaying ? "Pause music" : "Play music"}
+                >
+                    {!isLoaded ? (
+                        <svg className="w-4 h-4 text-[#d4af37] animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    ) : isPlaying ? (
+                        <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                        </svg>
+                    ) : (
+                        <svg className="w-4 h-4 text-[#d4af37]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    )}
+                </button>
+            )}
 
-        <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
+            {/* Music indicator */}
+            {/*{isPlaying && (*/}
+            {/*    <div*/}
+            {/*        className="fixed top-4 left-16 z-50 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur rounded-full shadow-md border border-[#d4af37]/20 animate-fade-in">*/}
+            {/*        <div className="flex gap-0.5">*/}
+            {/*            <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse"*/}
+            {/*                 style={{animationDelay: '0ms'}}></div>*/}
+            {/*            <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse"*/}
+            {/*                 style={{animationDelay: '150ms'}}></div>*/}
+            {/*            <div className="w-0.5 h-3 bg-[#d4af37] rounded-full animate-pulse"*/}
+            {/*                 style={{animationDelay: '300ms'}}></div>*/}
+            {/*        </div>*/}
+            {/*        <span className="text-xs text-gray-600">♫</span>*/}
+            {/*    </div>*/}
+            {/*)}*/}
+            {/* Header / Hero Section */}
+            <header className="relative h-[80vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 md:hidden">
+                    <img
+                        src={`${import.meta.env.BASE_URL}/images/bg_first.jpg`}
+                        alt="Wedding Background"
+                        className="w-full h-full object-cover object-top opacity-80"
+                    />
+                    <div className="absolute inset-0 bg-[#faf9f6]/50"></div>
+                </div>
+                <div className="absolute inset-0 hidden md:block">
+                    <img
+                        src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80"
+                        alt="Wedding Background"
+                        className="w-full h-full object-cover object-center
+              opacity-80"
+                    />
+                    <div className="absolute inset-0 bg-[#faf9f6]/80"></div>
+                </div>
+
+                <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
           <span className="text-sm tracking-[0.4em] text-[#d4af37] uppercase mb-6 block font-bold animate-fade-in">
             Pozivamo vas da svojim prisustvom uljepšate naš dan
           </span>
-            <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 flex flex-col md:flex-row md:gap-2 items-center justify-center">
-                <span className="animate-slide-right" style={{ animationDelay: '0ms' }}>Jelena</span>
-                <span className="animate-slide-right" style={{ animationDelay: '200ms', opacity: 0 }}>
-        <span className="font-jelena">&</span>
-    </span>
-                <span className="animate-slide-right" style={{ animationDelay: '400ms', opacity: 0 }}>Stefan</span>
-            </h1>
-          <div className="w-16 h-0.5 bg-[#d4af37] mx-auto mb-8"></div>
-          <p className="text-lg md:text-xl text-[#7a7a7a] leading-relaxed font-light font-serif italic animate-slide-left" style={{ animationDelay: '600ms', opacity: 0 }}>
-            "Ljubav jača od vina, prati nas kao sudbina, kao najljepša čarolija"
-          </p>
-        </div>
-        
-        {/*<div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">*/}
-        {/*  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">*/}
-        {/*    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />*/}
-        {/*  </svg>*/}
-        {/*</div>*/}
-      </header>
+                    <h1 className="text-6xl md:text-8xl font-cursive text-[#4a4a4a] mb-6 flex flex-col md:flex-row md:gap-2 items-center justify-center">
+                        <span className="animate-slide-right" style={{animationDelay: '0ms'}}>Jelena</span>
+                        <span className="animate-slide-right" style={{animationDelay: '200ms', opacity: 0}}>
+                            <span className="font-jelena">&</span>
+                        </span>
+                        <span className="animate-slide-right"
+                              style={{animationDelay: '400ms', opacity: 0}}>Stefan</span>
+                    </h1>
+                    <div className="w-16 h-0.5 bg-[#d4af37] mx-auto mb-8"></div>
+                    <p className="text-lg md:text-xl text-[#7a7a7a] leading-relaxed font-light font-serif italic animate-slide-left"
+                       style={{animationDelay: '600ms', opacity: 0}}>
+                        "Ljubav jača od vina, prati nas kao sudbina, kao najljepša čarolija"
+                    </p>
+                </div>
 
-      {/* Scratcher Section */}
-        <section
-            className="px-6 py-24 relative">
-            {/* Mobile: image background */}
-            <div
-                className="absolute inset-0 block md:hidden"
-                style={{
-                    backgroundImage: `url(${import.meta.env.BASE_URL}/images/bg_screc.jpg)`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'top',
-                }}
-            />
-            {/* Desktop: dot pattern background */}
-            <div
-                className="absolute inset-0 hidden md:block"
-                style={{
-                    backgroundColor: '#faf9f6',
-                    backgroundImage: `radial-gradient(circle, #d4af3722 2px, transparent 1px)`,
-                    backgroundSize: '24px 24px',
-                }}
-            />
-            <div className="absolute inset-0 bg-white/70"></div>
-            <div className="relative z-10 max-w-4xl mx-auto text-center">
-          {/*<h2 className="text-2xl font-serif text-[#4a4a4a] mb-2">Rezervišite datum!</h2>*/}
-          <p className="text-sm text-[#7a7a7a] mb-12 tracking-widest uppercase font-light">OGREBITE ZLATNO POLJE DA OTKRIJETE DATUM VJENČANJA</p>
-          
-          <div className="max-w-md mx-auto">
-            <ScratchCard 
-              revealText="16. maj 2026."
-              subText="Dolazak u restoran od 15h"
-              onScratched={() => setScratched(true)}
-            />
-          </div>
+                {/*<div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">*/}
+                {/*  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">*/}
+                {/*    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />*/}
+                {/*  </svg>*/}
+                {/*</div>*/}
+            </header>
 
-          {scratched && (
-            <div className="mt-8 animate-fade-in">
-              <p className="text-[#d4af37] font-serif text-xl italic uppercase">Molimo Vas da potvrdite dolazak do 01.05.2026.</p>
-                <p><a href="viber://add?number=%2B38269010567" className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a></p>
-                <p><a href="viber://add?number=%2B38267019007" className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a></p>
-              <button className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] bg-white hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
-                  <a href={`${import.meta.env.BASE_URL}event.ics`}>Dodaj u kalendar</a>
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
+            {/* Scratcher Section */}
+            <section
+                className="px-6 py-16 md:py-24 border border-[#d4af37]/40 relative md:border-none">
+                {/* Mobile: image background */}
+                <div
+                    className="absolute inset-0 block md:hidden"
+                    style={{
+                        backgroundImage: `url(${import.meta.env.BASE_URL}/images/bg_screc.jpg)`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'top',
+                    }}
+                />
+                {/* Desktop: dot pattern background */}
+                <div
+                    className="absolute inset-0 hidden md:block"
+                    style={{
+                        backgroundColor: '#faf9f6',
+                        backgroundImage: `radial-gradient(circle, #d4af3722 2px, transparent 1px)`,
+                        backgroundSize: '24px 24px',
+                    }}
+                />
+                <div className="absolute inset-0 bg-white/60"></div>
+                <div className="relative z-10 max-w-4xl mx-auto text-center">
+                    {/*<h2 className="text-2xl font-serif text-[#4a4a4a] mb-2">Rezervišite datum!</h2>*/}
+                    <p className="text-sm text-[#7a7a7a] mb-12 tracking-widest uppercase font-light">OGREBITE ZLATNO
+                        POLJE DA OTKRIJETE DATUM VJENČANJA</p>
 
-      {/* Agenda Section */}
-      <section id="agenda" className="px-6 py-20 bg-[#f4f3f0]">
-        <Agenda />
-      </section>
+                    <div className="max-w-md mx-auto">
+                        <ScratchCard
+                            revealText="16. maj 2026."
+                            subText="Dolazak u restoran od 15h"
+                            onScratched={() => setScratched(true)}
+                        />
+                    </div>
 
-      {/* Venue Section */}
-      <section id="venue" className="px-6 py-20 bg-[#faf9f6]">
-        <VenueExplorer
-            venue={vocoPodgorica}
-            mapEmbedUrl={mapEmbedUrl}
-        />
-      </section>
-      {/*Slider Section*/}
-        <section id="slider" className="px-6 py-20 bg-[#f4f3f0]">
-            <PhotoSlider
-            />
-        </section>
+                    {scratched && (
+                        <div className="mt-8 animate-fade-in">
+                            <p className="text-[#d4af37] font-serif text-xl italic uppercase">Molimo Vas da potvrdite
+                                dolazak do 01.05.2026.</p>
+                            <p><a href="viber://add?number=%2B38269010567"
+                                  className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a>
+                            </p>
+                            <p><a href="viber://add?number=%2B38267019007"
+                                  className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a>
+                            </p>
+                            <button
+                                className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] bg-white hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
+                                <a href={`${import.meta.env.BASE_URL}event.ics`}>Dodaj u kalendar</a>
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </section>
 
-      {/* Footer */}
-      <footer className="mt-auto py-12 text-center bg-white border-t border-gray-100">
-          <p className="text-xs tracking-[0.2em] text-[#999] uppercase mb-4">RADUJEMO SE VAŠEM DOLASKU!</p>
-        <p className="text-xs tracking-[0.2em] text-[#999] uppercase mb-4">Jelena & Stefan • 2026</p>
-        <div className="flex justify-center space-x-6">
-          <button className="text-[#7a7a7a] hover:text-[#d4af37] transition-colors">
-            <svg className="w-5 h-5" fill="red" viewBox="0 0 24 24"><path d="M12 21s-6-4.35-9.33-8.22C-.5 7.39 3.24 1 8.4 4.28 10.08 5.32 12 7.5 12 7.5s1.92-2.18 3.6-3.22C20.76 1 24.5 7.39 21.33 12.78 18 16.65 12 21 12 21z"/>
-            </svg>
-          </button>
-        </div>
-      </footer>
+            {/*Slider Section*/}
+            <section id="slider" className="px-6 py-20 bg-[#faf9f6]">
+                <PhotoSlider
+                />
+            </section>
 
-      {/* Global CSS for animations */}
-      <style>{`
+            {/* Agenda Section */}
+            <section id="agenda" className="px-6 py-2 md:py-20 bg-[#f4f3f0]">
+                <Agenda/>
+            </section>
+
+            {/* Venue Section */}
+            <section id="venue" className="px-6 py-8 md:py-20 bg-[#faf9f6]">
+                <VenueExplorer
+                    venue={vocoPodgorica}
+                    mapEmbedUrl={mapEmbedUrl}
+                />
+            </section>
+
+            {/* Footer */}
+            <footer className="mt-auto py-12 text-center bg-white border-t border-gray-100">
+                <p className="text-xs tracking-[0.2em] text-[#999] uppercase mb-4">RADUJEMO SE VAŠEM DOLASKU!</p>
+                <p className="text-xs tracking-[0.2em] text-[#999] uppercase mb-4">Jelena & Stefan • 2026</p>
+                <div className="flex justify-center space-x-6">
+                    <button className="text-[#7a7a7a] hover:text-[#d4af37] transition-colors">
+                        <svg className="w-5 h-5" fill="red" viewBox="0 0 24 24">
+                            <path
+                                d="M12 21s-6-4.35-9.33-8.22C-.5 7.39 3.24 1 8.4 4.28 10.08 5.32 12 7.5 12 7.5s1.92-2.18 3.6-3.22C20.76 1 24.5 7.39 21.33 12.78 18 16.65 12 21 12 21z"/>
+                        </svg>
+                    </button>
+                </div>
+            </footer>
+
+            {/* Global CSS for animations */}
+            <style>{`
         @keyframes fade-in {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -336,8 +354,8 @@ const App: React.FC = ({ audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp
           animation: slide-up 1.2s ease-out forwards;
         }
       `}</style>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default App;

@@ -15,7 +15,7 @@ const slides: Slide[] = [
         caption: 'ljubav koja traje',
     },
     {
-        url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80',
+        url: 'https://images.unsplash.com/photo-1578013161241-95474110fda3?w=1200&q=80',
         caption: 'zauvijek zajedno',
     },
     {
@@ -111,8 +111,8 @@ const PhotoSlider: React.FC = () => {
 
                     {/* Caption */}
                     {slides[current].caption && (
-                        <div className="absolute bottom-5 left-0 right-0 z-20 text-center px-6">
-                            <p className="text-white font-serif italic text-lg tracking-wide drop-shadow-md">
+                        <div className="absolute bottom-2 md:bottom-5 left-0 right-0 z-20 text-center px-6">
+                            <p className="text-white font-cursive italic text-xl md:text-2xl tracking-wide drop-shadow-md">
                                 {slides[current].caption}
                             </p>
                         </div>

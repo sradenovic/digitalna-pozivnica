@@ -29,7 +29,6 @@ const Agenda: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
       <div className="text-center mb-16">
-        {/*<span className="text-xs tracking-[0.3em] text-[#d4af37] uppercase font-light">Agenda vjenčanja</span>*/}
         <h2 className="text-4xl font-serif text-[#4a4a4a] mt-2">Agenda</h2>
         <div className="w-12 h-px bg-[#d4af37] mx-auto mt-4"></div>
       </div>
