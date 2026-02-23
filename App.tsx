@@ -29,15 +29,22 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
     const [showPlayPrompt, setShowPlayPrompt] = useState(false);
+    //iOS
+    const hasStartedRef = useRef(false);
 
     useEffect(() => {
-        const audio = new Audio(audioUrl);
-        audio.loop = true; // Loop the music continuously
-        audio.volume = 0.25; // Set to 30% volume for subtle background music
+        const audio = document.createElement('audio');
+        audio.src = audioUrl;
+        audio.loop = true;
+        audio.volume = 0.25;
 
-        // Important for mobile: Set playsinline attribute
         audio.setAttribute('playsinline', 'true');
         audio.setAttribute('webkit-playsinline', 'true');
+
+        //iOS
+        audio.preload = 'auto';
+        audio.style.display = 'none';
+        document.body.appendChild(audio);
 
         const handleCanPlay = () => {
             setIsLoaded(true);
@@ -62,6 +69,8 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
 
+        //iOS
+        audio.load();
         audioRef.current = audio;
 
         return () => {
@@ -71,6 +80,8 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
             audio.removeEventListener('pause', handlePause);
             audio.pause();
             audio.src = '';
+            //iOS
+            document.body.removeChild(audio);
         };
     }, [audioUrl]);
 
@@ -94,11 +105,30 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
         }
     };
 
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            const audio = audioRef.current;
+            if (!audio || !isLoaded || error) return;
+
+            if (document.hidden) {
+                audio.pause();
+            } else {
+                if (isPlaying) {
+                    audio.play().catch(err => console.error('Resume failed:', err));
+                }
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, [isPlaying]);
+
     const handlePromptClick = async () => {
         const audio = audioRef.current;
         if (!audio) return;
         try {
             await audio.play();
+            hasStartedRef.current = true;
             setShowPlayPrompt(false);
         } catch (err) {
             console.error('Failed to play audio:', err);
@@ -205,7 +235,7 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
             {/*    </div>*/}
             {/*)}*/}
             {/* Header / Hero Section */}
-            <header className="relative h-[80vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
+            <header className="relative h-[80vh] lg:h-[60vh] flex items-center justify-center overflow-hidden bg-white">
                 <div className="absolute inset-0 md:hidden">
                     <img
                         src={`${import.meta.env.BASE_URL}/images/bg_first.jpg`}
@@ -243,11 +273,11 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
                     </p>
                 </div>
 
-                {/*<div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">*/}
-                {/*  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">*/}
-                {/*    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />*/}
-                {/*  </svg>*/}
-                {/*</div>*/}
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </div>
             </header>
 
             {/* Scratcher Section */}
@@ -290,10 +320,10 @@ const App: React.FC = ({audioUrl = `${import.meta.env.BASE_URL}wedding-music.mp3
                             <p className="text-[#d4af37] font-serif text-xl italic uppercase">Molimo Vas da potvrdite
                                 dolazak do 01.05.2026.</p>
                             <p><a href="viber://add?number=%2B38269010567"
-                                  className="text-[#d4af37] font-serif text-xl italic">Stefan: <u>+38269010567</u></a>
+                                  className="text-[#d4af37] font-serif text-xl italic">Stefan Radenović: <u>+38269010567</u></a>
                             </p>
                             <p><a href="viber://add?number=%2B38267019007"
-                                  className="text-[#d4af37] font-serif text-xl italic">Jelena: <u>+38267019007</u></a>
+                                  className="text-[#d4af37] font-serif text-xl italic">Jelena Jovanović: <u>+38267019007</u></a>
                             </p>
                             <button
                                 className="mt-6 px-10 py-4 border border-[#d4af37] text-[#d4af37] bg-white hover:bg-[#d4af37] hover:text-white transition-all uppercase text-xs tracking-[0.3em] font-semibold rounded-sm">
